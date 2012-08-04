@@ -11,3 +11,8 @@ h4 {
     color: grey;
     font-style: italic;
 }
+
+pre.log {
+    height: 300px;
+    overflow: scroll;
+}

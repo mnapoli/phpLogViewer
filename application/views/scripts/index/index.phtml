@@ -5,3 +5,62 @@
 	</h1>
 </div>
 
+<div id="errorMessage" class="alert alert-error hide">
+	<a class="close" data-dismiss="alert" href="#">×</a>
+	<h4 class="alert-heading">Error!</h4>
+
+	<div class="content"></div>
+</div>
+
+
+<?php foreach ($this->logs as $logId => $log) : ?>
+
+	<div class="log-container clearfix" data-logid="<?=$logId?>">
+		<h3><?=$log?></h3>
+		<pre class="log"></pre>
+		<button class="btn btn-primary btn-small pull-right log-refresh" data-logid="<?=$logId?>">
+			<i class="icon-refresh icon-white"></i>
+			Refresh
+		</button>
+	</div>
+
+<?php endforeach; ?>
+
+
+<script>
+
+	function refreshLog(logId) {
+		$("#errorMessage").fadeOut();
+		$.ajax({
+			type: "POST",
+			url: baseUrl + "/log/get-tail",
+			dataType: "json",
+			data: {log: logId},
+			success: function(data) {
+				$(".log-container[data-logid=" + logId + "] pre").html(data);
+				// Scroll down
+				$(".log-container[data-logid=" + logId + "] pre")
+					.scrollTop($(".log-container[data-logid=" + logId + "] pre")[0].scrollHeight);
+			},
+			error: function(xhr) {
+				$("#errorMessage .content").text(jQuery.parseJSON(xhr.responseText));
+				$("#errorMessage").fadeIn();
+			}
+		});
+	}
+
+
+	$(function() {
+
+		$(".log-container").each(function() {
+			refreshLog($(this).data("logid"));
+		});
+
+		$("button.log-refresh").click(function(e) {
+			e.preventDefault();
+			refreshLog($(this).data("logid"));
+		});
+
+	});
+
+</script>

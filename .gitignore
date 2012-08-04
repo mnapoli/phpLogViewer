@@ -34,3 +34,5 @@ nbproject
 .CVS
 .idea
 node_modules
+
+application/configs/logs.ini

@@ -26,8 +26,16 @@ class ErrorController extends Zend_Controller_Action
 				$this->getResponse()->setHttpResponseCode(500);
 				break;
 		}
-		$this->view->exception = $error->exception;
-		$this->view->request = $error->request;
+		// if AJAX, then return AJAX response
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			// Send Json response
+			$jsonHelper = $this->getHelper('Json');
+			$jsonHelper->sendJson($error->exception->getMessage());
+			$jsonHelper->getResponse()->sendResponse();
+		} else {
+			$this->view->exception = $error->exception;
+			$this->view->request   = $error->request;
+		}
 	}
 
 }

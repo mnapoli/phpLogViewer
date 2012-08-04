@@ -4,9 +4,7 @@ class IndexController extends Zend_Controller_Action
 {
 
 	public function indexAction() {
-	}
-
-	public function aboutAction() {
+		$this->view->logs = Zend_Registry::get('logs');
 	}
 
 }

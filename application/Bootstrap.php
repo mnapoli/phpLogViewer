@@ -18,6 +18,8 @@ $autoloader = Zend_Loader_Autoloader::getInstance();
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
 
+	const LOGS_CONFIGURATION_FILE = '/configs/logs.ini';
+
 	/**
 	 * Application's configuration
 	 */
@@ -36,6 +38,17 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		mb_internal_encoding('UTF-8');
 		// Set locale
 		setlocale(LC_ALL, 'en_US.UTF8');
+	}
+
+	protected function _initLogs() {
+		$file = APPLICATION_PATH . self::LOGS_CONFIGURATION_FILE;
+		if (! (file_exists($file) && is_readable($file))) {
+			throw new Exception("Configuration file $file doesn't exist or is not readable");
+		}
+		// Read ini file
+		$data = parse_ini_file($file);
+		$logFiles = $data['logs'] ?: array();
+		Zend_Registry::set('logs', $logFiles);
 	}
 
 }
